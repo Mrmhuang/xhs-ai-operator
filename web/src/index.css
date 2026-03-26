@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --xhs-red: #ff4c3a;
+  --xhs-red-hover: #e5412f;
+  --xhs-pink: #ff8a65;
+  --xhs-gradient: linear-gradient(135deg, #ff4c3a, #ff8a65);
+  --bg-primary: #fef8f4;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #fff5f0;
+  --border-color: #fde8e0;
+  --border-hover: #ffcab8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #999;
+  --text-muted: #ccc;
+  --card-shadow: 0 2px 8px rgba(255, 76, 58, 0.06);
+  --card-shadow-hover: 0 4px 16px rgba(255, 76, 58, 0.12);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffd4c4 transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ffd4c4; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #ffb8a0; }
+
+/* Markdown 样式 */
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  font-weight: 700;
+  margin: 0.8em 0 0.4em;
+  color: var(--text-primary);
+}
+.markdown-content p { margin: 0.5em 0; line-height: 1.7; }
+.markdown-content code {
+  background: var(--bg-tertiary);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: var(--xhs-red);
+}
+.markdown-content pre {
+  background: #fef0ea;
+  padding: 1em;
+  border-radius: 12px;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+}
+.markdown-content ul, .markdown-content ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+.markdown-content strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.markdown-content a {
+  color: var(--xhs-red);
+  text-decoration: none;
+}
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

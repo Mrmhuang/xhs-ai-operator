@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  xhs-ai-operator:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - trendradar
+    environment:
+      - TRENDRADAR_MCP_URL=http://trendradar:3001/mcp
+    restart: unless-stopped
+
+  # TrendRadar - AI 热点追踪
+  # 参考：https://github.com/sansan0/TrendRadar
+  trendradar:
+    image: ghcr.io/sansan0/trendradar:latest
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./trendradar-config:/app/config
+      - trendradar-data:/app/data
+    restart: unless-stopped
+
+  # xiaohongshu-mcp - 小红书发布
+  # 参考：https://github.com/xpzouying/xiaohongshu-mcp
+  # 首次使用需登录：访问 http://localhost:18060/mcp 调用 get_login_qrcode 扫码
+  xiaohongshu-mcp:
+    image: xpzouying/xiaohongshu-mcp:latest
+    ports:
+      - "18060:18060"
+    volumes:
+      - xhs-mcp-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  trendradar-data:
+  xhs-mcp-data:
