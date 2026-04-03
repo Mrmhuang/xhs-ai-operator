@@ -243,10 +243,71 @@ export default function useChat() {
     setScrapedImages([]);
   }, []);
 
+  // 把用户输入的文字直接走笔记生成流水线（不经过对话）
+  const sendAsNote = useCallback(async (content) => {
+    if (!content.trim() || isLoading) return;
+    if (isSendingRef.current) return;
+    isSendingRef.current = true;
+
+    const userMsg = {
+      id: Date.now(),
+      role: 'user',
+      content,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setIsLoading(true);
+
+    const aiMsgId = Date.now() + 1;
+    setMessages(prev => [...prev, {
+      id: aiMsgId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+    }]);
+
+    try {
+      const urls = extractUrls(content);
+      const cleanText = stripUrls(content);
+      const result = await generateNote({
+        materials: cleanText,
+        instruction: cleanText || '请根据以下内容整理成一篇可直接发布的小红书笔记。',
+        urls: urls.length > 0 ? urls : undefined,
+      });
+
+      if (!result?.success) {
+        throw new Error(result?.error || '笔记生成失败');
+      }
+
+      const note = normalizeNote(result.note);
+      pushNoteVersion(note, '直接生成');
+      setScrapedImages(result.scrapedImages || []);
+      setMessages(prev =>
+        prev.map(m =>
+          m.id === aiMsgId
+            ? { ...m, content: formatNoteMessage(note, '已根据你的内容生成笔记：'), noteGenerated: true }
+            : m
+        )
+      );
+    } catch (error) {
+      setMessages(prev =>
+        prev.map(m =>
+          m.id === aiMsgId
+            ? { ...m, content: `❌ 笔记生成失败: ${error.message}`, isError: true }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+      isSendingRef.current = false;
+    }
+  }, [isLoading]);
+
   return {
     messages,
     isLoading,
     sendMessage,
+    sendAsNote,
     clearMessages,
     currentNote,
     setCurrentNote,

@@ -10,7 +10,7 @@ import useChat from './hooks/useChat';
 
 export default function App() {
   const {
-    messages, isLoading, sendMessage, clearMessages,
+    messages, isLoading, sendMessage, sendAsNote, clearMessages,
     currentNote, setCurrentNote, scrapedImages, convertToNote,
     noteVersions, versionIndex, setVersionIndex,
   } = useChat();
@@ -128,6 +128,7 @@ export default function App() {
           messages={messages}
           isLoading={isLoading}
           onSend={sendMessage}
+          onSendAsNote={sendAsNote}
           onClear={clearMessages}
           scrapedImages={scrapedImages}
           previewTopic={previewTopic}

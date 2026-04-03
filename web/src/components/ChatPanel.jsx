@@ -10,7 +10,7 @@ import ReactMarkdown from 'react-markdown';
 import { uploadImages, publishNote, generateImageForNote } from '../api';
 
 export default function ChatPanel({
-  messages, isLoading, onSend, onClear, scrapedImages,
+  messages, isLoading, onSend, onSendAsNote, onClear, scrapedImages,
   previewTopic, onWriteFromTopic, onDismissTopic,
   currentNote, onUpdateNote, onConvertToNote,
   noteVersions = [], versionIndex = -1, onVersionChange,
@@ -51,6 +51,13 @@ export default function ChatPanel({
   const handleSend = () => {
     if ((!input.trim() && attachedImages.length === 0) || isLoading) return;
     onSend(input, attachedImages);
+    setInput('');
+    setAttachedImages([]);
+  };
+
+  const handleSendAsNote = () => {
+    if (!input.trim() || isLoading) return;
+    onSendAsNote(input);
     setInput('');
     setAttachedImages([]);
   };
@@ -675,6 +682,17 @@ export default function ChatPanel({
               title="上传图片"
             >
               {uploading ? <Loader2 size={18} className="animate-spin" /> : <Paperclip size={18} />}
+            </button>
+            <button
+              onClick={handleSendAsNote}
+              disabled={isLoading || !input.trim()}
+              className="p-2 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ color: 'var(--text-secondary)' }}
+              onMouseEnter={e => { if (!e.currentTarget.disabled) { e.currentTarget.style.color = 'var(--xhs-red)'; e.currentTarget.style.background = 'var(--border-color)'; }}}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
+              title="直接生成笔记（不经过对话）"
+            >
+              <FileText size={18} />
             </button>
             <button
               onClick={handleSend}
